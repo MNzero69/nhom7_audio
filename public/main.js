@@ -5,7 +5,7 @@ let Peer = window.Peer;
 
 let messagesEl = document.querySelector('.messages');
 let peerIdEl = document.querySelector('#connect-to-peer');
-let videoEl = document.querySelector('.remote-video');
+
 
 let logMessage = (message) => {
   let newMessage = document.createElement('div');
@@ -13,9 +13,6 @@ let logMessage = (message) => {
   messagesEl.appendChild(newMessage);
 };
 
-let renderVideo = (stream) => {
-  videoEl.srcObject = stream;
-};
 
 // Register with the peer server
 let peer = new Peer({
@@ -45,7 +42,6 @@ peer.on('call', (call) => {
   navigator.mediaDevices.getUserMedia({video: true, audio: true})
     .then((stream) => {
       call.answer(stream); // Answer the call with an A/V stream.
-      call.on('stream', renderVideo);
     })
     .catch((err) => {
       console.error('Failed to get local stream', err);
@@ -65,10 +61,9 @@ let connectToPeer = () => {
     conn.send('hi!');
   });
   
-  navigator.mediaDevices.getUserMedia({video: true, audio: true})
+  navigator.mediaDevices.getUserMedia({video: false, audio: true})
     .then((stream) => {
       let call = peer.call(peerId, stream);
-      call.on('stream', renderVideo);
     })
     .catch((err) => {
       logMessage('Failed to get local stream', err);
